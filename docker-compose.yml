@@ -1,0 +1,10 @@
+services:
+  api:
+    # Using the '.' "shortcut" (so to speak) indicates the build file (Dockerfile) exists in the same directory. Unix-land uses the sinlge dot '.' as "current directory", so it tracks.
+    build: .
+
+    ports:
+      - "8000:8000" # And this is where the EXPOSE documentation (in conjunction with the run subcommand's -p option) becomes "code"/configuration. See Dockerfile for details for the older me's brain note.
+
+    volumes:
+      - ./app:/app/app
