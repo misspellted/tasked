@@ -9,3 +9,4 @@ services:
     volumes:
       - ./app:/app/app
       - ./data:/app/data # Persistent SQLite storage that survives container restarts/rebuilds
+      - ./migrations:/app/migrations # Can't have the app run migrations if the migrations aren't available!
