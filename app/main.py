@@ -2,6 +2,7 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from app.database import init_db
+from app.routes import router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -10,6 +11,7 @@ async def lifespan(app: FastAPI):
                # Anything after yield would run on shutdown
 
 app = FastAPI(lifespan=lifespan)
+app.include_router(router)
 
 @app.get("/")
 def root():
