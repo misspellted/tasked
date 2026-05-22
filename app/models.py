@@ -30,3 +30,6 @@ class TaskResponse(BaseModel):
     is_deleted: int
     created_at: str
     updated_at: str
+
+class TaskReorder(BaseModel):
+    task_ids: list[int]
