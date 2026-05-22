@@ -52,13 +52,15 @@ TASKED replaces all of that with a glanceable, deployable, actually-persistent t
 | `horizon` | enum | `SPRINT` (short-term), `LONGTERM` |
 | `position` | integer | Order within status column — implicit priority |
 | `nogo_reason` | text | Nullable; **required** when `status = NOGO` |
-| `recurs` | boolean | Default `false` — reserved for future use |
-| `recur_interval` | text | Nullable — e.g. `monthly` |
+| `recurs †` | boolean | Default `false` — reserved for future use |
+| `recur_interval †` | text | Nullable — e.g. `monthly` |
 | `is_deleted` | boolean | Default `false` — soft delete flag |
 | `created_at` | timestamp | Capture time |
 | `updated_at` | timestamp | Last modified |
-| `completed_at` | timestamp | Nullable — set on `DONE` or `NOGO` |
-| `deleted_at` | timestamp | Nullable — set on soft delete |
+| `completed_at †` | timestamp | Nullable — set on `DONE` or `NOGO` |
+| `deleted_at †` | timestamp | Nullable — set on soft delete |
+
+> Fields marked † are specified but not yet in the active migration — reserved for Phase 4.
 
 > No hard deletes. Ever. The graveyard is data. 💀
 
@@ -88,6 +90,7 @@ Task
 |--------|----------|-----------|-------|
 | `GET` | `/api/tasks` | Enumerate | All tasks; excludes `is_deleted=true`. Filterable: `?status=TODO`, `?horizon=SPRINT`, etc. |
 | `POST` | `/api/tasks` | Create | Body: `title`, `description`, `horizon` |
+| `PUT` | `/api/tasks/reorder` | Reorder | Body: `task_ids: [id_a, id_b]` — swaps positions |
 
 ### Single Task
 
@@ -96,7 +99,6 @@ Task
 | `GET` | `/api/tasks/{id}` | Read | Single task by id |
 | `PUT` | `/api/tasks/{id}` | Update | Body: any changed fields incl. `status`, `nogo_reason` |
 | `DELETE` | `/api/tasks/{id}` | Soft Delete | Sets `is_deleted=true`, `deleted_at=now()` |
-| `PUT` | `/api/tasks/{id}/reorder` | Reorder | Updates `position` field only |
 
 ### Compost Heap 🌱
 
@@ -223,20 +225,20 @@ Save enabled = (DODO == true) AND (status != NOGO OR nogo_reason != empty)
 
 ## Implementation Phases
 
-### Phase 1 — Design & Planning ✅ *(you are here)*
+### Phase 1 — Design & Planning ✅
 - Personas defined
 - Data model agreed
 - Wireframe agreed
 - API endpoints defined
 - This README
 
-### Phase 2 — Backend Foundations
+### Phase 2 — Backend Foundations ✅
 - Python + Flask/FastAPI
 - SQLite schema
 - CRUDE REST API
 - Dockerized from day one
 
-### Phase 3 — Frontend Foundations
+### Phase 3 — Frontend Foundations *(you are here)*
 - Vanilla HTML/CSS/JS
 - Static task list wired to API
 - Card panel, DODO flag, NOPE button

@@ -2,3 +2,5 @@
 # Ignore Python cache directories
 __pycache__/
 
+# Ignore SQLite databases
+*.db
