@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>TASKED</title>
+  </head>
+  <body onload="onHorizonSelected()">
+    <script>
+      function onHorizonSelected()
+      {
+        // console.log("onHorizonSelected")
+        if (document.getElementById("horizon-near").checked)
+        {
+          // console.log("NEAR horizon selected")
+          // console.log(document.getElementById("horizon-count-todo").innerHTML) // The <center>...</center> text is included. Hmm...
+          // Maximum horrible UI torment embraced!
+          document.getElementById("horizon-count-todo").innerHTML = "<center>1</center>"
+          document.getElementById("horizon-count-ongo").innerHTML = "<center>3</center>"
+          document.getElementById("horizon-count-done").innerHTML = "<center>3</center>"
+          document.getElementById("horizon-count-nogo").innerHTML = "<center>7</center>"
+        }
+        else
+        {
+          // console.log("LONG horizon selected")
+          // Once I started with the numbers, there was only one second meme number to go with!
+          document.getElementById("horizon-count-todo").innerHTML = "<center>9</center>"
+          document.getElementById("horizon-count-ongo").innerHTML = "<center>0</center>"
+          document.getElementById("horizon-count-done").innerHTML = "<center>0</center>"
+          document.getElementById("horizon-count-nogo").innerHTML = "<center>1</center>"
+          // It's also so.. so... aligned with the IRL long-term whiteboard contents vibe -- not much is ONGO/DONE!
+        }
+      }
+    </script>
+    <div id="title">
+      <h1>TASKED</h1>
+    </div>
+    <hr/>
+    <div id="horizon-selector">
+      <input type="radio" name="horizon" id="horizon-near" value="near" checked onclick="onHorizonSelected()"/>
+      <label for="horizon-near">NEAR</label>
+      <span>|</span>
+      <input type="radio" name="horizon" id="horizon-long" value="long" onclick="onHorizonSelected()"/>
+      <label for="horizon-long">LONG</label>
+    </div>
+    <hr/>
+    <div id="horizon-counts">
+      <table>
+        <tr>
+          <td id="horizon-status-todo">TODO</td>
+          <td id="horizon-status-ongo">ONGO</td>
+          <td id="horizon-status-done">DONE</td>
+          <td id="horizon-status-nogo">NOGO</td>
+        </tr>
+        <tr>
+          <td id="horizon-count-todo"><center>1</center></td>
+          <td id="horizon-count-ongo"><center>3</center></td>
+          <td id="horizon-count-done"><center>3</center></td>
+          <td id="horizon-count-nogo"><center>7</center></td>
+        </tr>
+      </table>
+    </div>
+    <hr/>
+    <div id="horizon-entries">
+      <table>
+        <tr>
+          <td><input type="button" id="position-move-rise" value="/\"/></td>
+          <td><input type="button" id="position-move-fall" value="\/"/></td>
+          <td>|</td>
+          <td id="horizon-entry-title">DO ALL THE THINGS!</td>
+          <td>|</td>
+          <td><input type="button" id="modify-entry" value="/"/></td>
+          <td><input type="button" id="delete-entry" value="X"/></td>
+        </tr>
+        <tr>
+          <td><input type="button" id="position-move-rise" value="/\"/></td>
+          <td><input type="button" id="position-move-fall" value="\/"/></td>
+          <td>|</td>
+          <td id="horizon-entry-title">OF COURSE LOREM IPSUM!</td>
+          <td>|</td>
+          <td><input type="button" id="modify-entry" value="/"/></td>
+          <td><input type="button" id="delete-entry" value="X"/></td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>
