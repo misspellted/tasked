@@ -2,11 +2,22 @@ services:
   api:
     # Using the '.' "shortcut" (so to speak) indicates the build file (Dockerfile) exists in the same directory. Unix-land uses the sinlge dot '.' as "current directory", so it tracks.
     build: .
-
-    ports:
-      - "8000:8000" # And this is where the EXPOSE documentation (in conjunction with the run subcommand's -p option) becomes "code"/configuration. See Dockerfile for details for the older me's brain note.
-
+    # Removed the host port exposure - nginx is now the front door to TASKED.
+    # If you ever need to poke the API directly during dev (e.g. via Swagger at /docs),
+    # temporarily uncomment the lines below:
+    # ports:
+    #   - "8000:8000" # When I asked Claude Sonnet 4.6 which number corresponds to the frontend and backend, it replied "left is yours, right is theirs" (so left is the host port listener, right is the container target port).
     volumes:
       - ./app:/app/app
       - ./data:/app/data # Persistent SQLite storage that survives container restarts/rebuilds
       - ./migrations:/app/migrations # Can't have the app run migrations if the migrations aren't available!
+
+  web:
+    image: nginx:alpine # Lightweight nginx - no need to build anything, it just serves files
+    ports:
+      - "80:80" # TASKED now lives at http://localhost - no port number required
+    volumes:
+      - ./web:/usr/share/nginx/html # The static files nginx will serve
+      - ./web/nginx.conf:/etc/nginx/conf.d/default.conf # Our routing + proxy rules
+    depends_on:
+      - api # Let the backend get its boots on before nginx starts answering the door
