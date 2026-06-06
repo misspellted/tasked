@@ -23,7 +23,7 @@
 | `title` | text | Short card label |
 | `description` | text | Nullable — optional context |
 | `status` | enum | `TODO`, `ONGO`, `DONE`, `NOGO` |
-| `horizon` | enum | `SPRINT` (short-term), `LONGTERM` |
+| `horizon` | enum | `NEAR` (short-term), `LONG` |
 | `position` | integer | Order within status column — implicit priority |
 | `nogo_reason` | text | Nullable; **required** when `status = NOGO` |
 | `recurs †` | boolean | Default `false` — reserved for future use |
@@ -62,7 +62,7 @@ Task
 
 | Method | Endpoint | Operation | Notes |
 |--------|----------|-----------|-------|
-| `GET` | `/api/tasks` | Enumerate | All tasks; excludes `is_deleted=true`. Filterable: `?status=TODO`, `?horizon=SPRINT`, etc. |
+| `GET` | `/api/tasks` | Enumerate | All tasks; excludes `is_deleted=true`. Filterable: `?status=TODO`, `?horizon=NEAR`, etc. |
 | `POST` | `/api/tasks` | Create | Body: `title`, `description`, `horizon` |
 | `PUT` | `/api/tasks/reorder` | Reorder | Body: `task_ids: [id_a, id_b]` — swaps positions |
 
@@ -135,7 +135,7 @@ Save enabled = (DODO == true) AND (status != NOGO OR nogo_reason != empty)
 |  ↑↓ ✓ Task three  |  -- meta --          |
 |  ↑↓ ✗ Task four   |  created:  ...       |
 |                    |  updated:  ...       |
-|                    |  horizon:  SPRINT    |
+|                    |  horizon:  NEAR      |
 |                    |  recurs:   false     |
 |                    |                      |
 |                    |  [ ONGO ] [ DONE ]   |
@@ -167,7 +167,7 @@ Save enabled = (DODO == true) AND (status != NOGO OR nogo_reason != empty)
 | Status flow: TODO → ONGO → DONE / NOGO | ✅ | Core |
 | NOGO reason — required field | ✅ | Validated on save |
 | DODO flag + NOPE button | ✅ | State management |
-| Short vs long-term horizon (SPRINT / LONGTERM) | ✅ | Swim lanes |
+| Short vs long-term horizon (NEAR / LONG) | ✅ | Swim lanes |
 | Soft delete | ✅ | `is_deleted` flag, data preserved |
 | Reorder via hover arrows | ✅ | Pain point by design — drives drag-and-drop post-MVP |
 | Docker deployment | ✅ | From day one |
@@ -207,7 +207,7 @@ Save enabled = (DODO == true) AND (status != NOGO OR nogo_reason != empty)
 - NOGO reason validation
 
 ### Phase 4 — Feature Depth
-- SPRINT / LONGTERM horizons
+- NEAR / LONG horizons
 - Soft delete
 - Reorder arrows
 - Month-end reset mechanic
