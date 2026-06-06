@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS tasks (
     title       TEXT    NOT NULL,
     description TEXT,
     status      TEXT    NOT NULL DEFAULT 'TODO',
-    horizon     TEXT    NOT NULL DEFAULT 'SPRINT',
+    horizon     TEXT    NOT NULL DEFAULT 'NEAR',
     position    INTEGER NOT NULL DEFAULT 0,
     nogo_reason TEXT,
     is_deleted  INTEGER NOT NULL DEFAULT 0,
