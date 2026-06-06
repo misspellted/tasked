@@ -35,4 +35,4 @@ TASKED replaces all of that with a glanceable, deployable, actually-persistent t
 | Database (MVP) | SQLite | File-based, trivially Dockerized |
 | Database (future) | PostgreSQL | Migration is its own portfolio milestone |
 | [Frontend](./web) | Vanilla HTML / CSS / JS | No frameworks-du-jour |
-| [Deployment](docker-compose.yml) | Docker | Because "it works on my machine" is not a deployment strategy |
+| [Deployment](USAGE.md) | Docker | Because "it works on my machine" is not a deployment strategy |
