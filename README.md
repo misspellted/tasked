@@ -1,7 +1,7 @@
 # TASKED
 > *A personal command center to replace the whiteboards you never keep up to date.*
 
-![The horible static UI, live and Dockerized](./img/Jay-Eee-Ell-Ell-Ohh.png)
+![Enumerate!](./img/Jay-Eee-Ell-Ell-Ohh-Noo.png)
 
 ---
 
