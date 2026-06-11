@@ -1,4 +1,69 @@
 
+function clearTaskEntryDetails()
+{
+  // Wipe out the div contents;
+  document.getElementById("task-entry-details").innerHTML = ""
+}
+
+async function reviewEntry(id)
+{
+  return await fetch("/api/tasks/" + id)
+}
+
+function renderNoGoReason(task)
+{
+  return task.status !== "NOGO" ? "" :
+    "<tr>" +
+    "<td>Reason</td>" +
+    "<td>" + task.nogo_reason + "</td>" +
+    "</tr>"
+}
+
+async function onReviewEntryClicked(id)
+{
+  // TODO: Figure out if there is a way to preempt calling the API if a task is currently displayed and it has the same id.
+
+  const response = await reviewEntry(id)
+
+  // Do an early out path, to avoid having to depopulate the task-entry-details div.
+  if (!response.ok)
+  {
+    // TODO: Dump something in console.
+
+    return
+  }
+
+  // Should be good to spam the user!
+  const task = await response.json()
+
+  // We're going to reuse the task-entry-details div for now; may change in the future, but for now, ugly and workin'!
+  const task_entry_details = document.getElementById("task-entry-details")
+  task_entry_details.innerHTML =
+    "<table>" +
+    "<tr>" +
+    "<td>Horizon</td>" +
+    "<td>" + task.horizon + "</td>" +
+    "</tr>" +
+    "<tr>" +
+    "<td>Title</td>" +
+    "<td>" + task.title + "</td>" +
+    "</tr>" +
+    "<tr>" +
+    "<td>Description</td>" +
+    "<td>" + (task.description ?? "&lt;none&gt;") + "</td>" +
+    "</tr>" +
+    "<tr>" +
+    "<td>Status</td>" +
+    "<td>" + task.status + "</td>" +
+    "</tr>" +
+    "</table>" +
+    renderNoGoReason(task) +
+    "<input type='button' value='Vanish' onclick='clearTaskEntryDetails()'/>"
+
+  // Seems weird to display the horizon attribute, since they should be filtered accordingly, but... *shrug*
+  // ya never know what derps technology is gonna do!
+}
+
 async function onHorizonSelected()
 {
   // Now that we are crossing the aisle to the backend, we can simply "know" which horizon is selected..
@@ -50,21 +115,10 @@ async function onHorizonSelected()
       "<td>|</td>" +
       "<td>" + task.title + "</td>" +
       "<td>|</td>" +
-      "<td><input type='button' value='/'/></td>" +
+      "<td><input type='button' value='/' onclick='onReviewEntryClicked(" + task.id + ")'/></td>" +
       "<td><input type='button' value='X'/></td>"
     table.appendChild(row)
   }
-}
-
-function clearTaskEntryDetails()
-{
-  // Wipe out the div contents;
-  document.getElementById("task-entry-details").innerHTML = ""
-}
-
-function onCancelNewEntryClicked()
-{
-  clearTaskEntryDetails()
 }
 
 async function createNewEntry(horizon, title)
@@ -110,7 +164,7 @@ function onNewEntryClicked()
   const task_entry_details = document.getElementById("task-entry-details")
 
   task_entry_details.innerHTML =
-    "<input type='button' value='Cancel' onclick='onCancelNewEntryClicked()'/>" +
+    "<input type='button' value='Cancel' onclick='clearTaskEntryDetails()'/>" +
     "<input type='text' id='new-entry-title' placeholder='Task title' />" +
     "<input type='button' value='Create' onclick='onCreateNewEntryClicked()'/>"
 }
