@@ -5,12 +5,113 @@ function clearTaskEntryDetails()
   document.getElementById("task-entry-details").innerHTML = ""
 }
 
-async function reviewEntry(id)
+async function getTask(id)
 {
   return await fetch("/api/tasks/" + id)
 }
 
-function renderNoGoReason(task)
+function renderUpdateNoGoReason(task, modified_task_status)
+{
+  console.log("renderUpdateNoGoReason(current status:" + task.status + "; modifed status:"  + modified_task_status + ")")
+
+  const task_status = modified_task_status !== task.status ? modified_task_status : task.status
+
+  return task_status !== "NOGO" ? "" :
+    "<tr id='modify-task-nogo-reason-row'>" +
+    "<td>Reason</td>" +
+    "<td>" +
+    "<textarea id='modify-task-nogo-reason'>" +
+    (task.nogo_reason ?? "") +
+    "</textarea>" +
+    "</td>" +
+    "</tr>"
+}
+
+function renderTaskEntryUpdateView(task)
+{
+  // Get the modified task status value before rerendering on status selection change.
+  const existing_task_status_selector = document.getElementById("modify-task-status")
+  const task_status = existing_task_status_selector !== null ? existing_task_status_selector.value : task.status
+
+  // We don't actually modify the task here; instead, we're putting the page in modify "mode".
+  // But we also use the task id field so a Cancel action switches back to review "mode".
+  // We're going to reuse the task-entry-details div for now; may change in the future, but for now, ugly and workin'!
+  const task_entry_details = document.getElementById("task-entry-details")
+  task_entry_details.innerHTML =
+    "<table>" +
+    "<tr>" +
+    "<td>Horizon</td>" +
+    "<td>" +
+    "<select name='horizon' id='modify-task-horizon'>" +
+    "<option value='NEAR'" + (task.horizon === "NEAR" ? " selected" : "") + ">NEAR</option>" +
+    "<option value='LONG'" + (task.horizon === "LONG" ? " selected" : "") + ">LONG</option>" +
+    "</select>" +
+    "</tr>" +
+    "<tr>" +
+    "<td>Title</td>" +
+    "<td>" +
+    "<input type='text' id='modify-entry-title' value='" + task.title + "' />" +
+    "</td>" +
+    "</tr>" +
+    "<tr>" +
+    "<td>Description</td>" +
+    "<td>" +
+    "<textarea id='modify-task-description'>" +
+    (task.description ?? "") +
+    "</textarea>" +
+    "</td>" +
+    "</tr>" +
+    "<tr>" +
+    "<td>Status</td>" +
+    "<td>" +
+    "<select name='status' id='modify-task-status'>" +
+    "<option value='TODO'" + (task_status === "TODO" ? " selected" : "") + ">TODO</option>" +
+    "<option value='ONGO'" + (task_status === "ONGO" ? " selected" : "") + ">ONGO</option>" +
+    "<option value='DONE'" + (task_status === "DONE" ? " selected" : "") + ">DONE</option>" +
+    "<option value='NOGO'" + (task_status === "NOGO" ? " selected" : "") + ">NOGO</option>" +
+    "</select>" +
+    "</td>" +
+    "</tr>" +
+    renderUpdateNoGoReason(task, task_status) +
+    "<tr>" +
+    "<td>Actions</td>" +
+    "<td>" +
+    "<input type='button' value='Cancel' onclick='onReviewEntryClicked(" + task.id + ")'/>" +
+    "<input type='button' value='Update' onclick='onUpdateEntryClicked(" + task.id + ")'/>" +
+    "</td>" +
+    "</tr>" +
+    "</table>"
+
+  // Since it doesn't look easy to connect the status selection and the NOGO reason rendering, it's probably
+  // better to use addEventListener (ref: https://www.xjavascript.com/blog/get-selected-value-text-from-select-on-change/#2-the-change-event-what-you-need-to-know)
+  // But does it work after injecting the HTML above via innerHTML?
+  const task_status_selector = document.getElementById("modify-task-status")
+  // task_status_selector.addEventListener("change", onModifyEntryClicked(id)) // NOPE! This calls the function and returns the value (nothing).. not.. useful.
+  task_status_selector.addEventListener("change", () => renderTaskEntryUpdateView(task)) // Ooh, this looks like lambdas in Python! Useful at times, but huge XP there.
+}
+
+async function onModifyEntryClicked(id)
+{
+  // It was origionally conceived that we'd pass in the task object itself; however, writing the HTML got ... confusing QUIC,
+  // so after a quick consultation with le Claude, we're going to just provide the task id, and fetch again. Sure, another
+  // API call, but.. always the latest data! ... *yay*...
+  const response = await getTask(id)
+
+  // Do an early out path, to avoid having to depopulate the task-entry-details div.
+  if (!response.ok)
+  {
+    // TODO: Dump something in console.
+
+    return
+  }
+
+  // Should be good to allow the user to maybe modify?
+  const task = await response.json()
+
+  renderTaskEntryUpdateView(task)
+}
+
+function renderReviewNoGoReason(task)
 {
   return task.status !== "NOGO" ? "" :
     "<tr>" +
@@ -21,9 +122,20 @@ function renderNoGoReason(task)
 
 async function onReviewEntryClicked(id)
 {
-  // TODO: Figure out if there is a way to preempt calling the API if a task is currently displayed and it has the same id.
+  // Well, since behavior is getting more complex, we also need to check whether the page is in the modify "mode".
+  // If so, exit early and quick - we don't wanna lose changes!
+  const modifying = document.getElementById("modify-task-button") !== null
+  if (modifying)
+  {
+    // Aaand.. we're done!
+    return
+  }
 
-  const response = await reviewEntry(id)
+  // TODO: Figure out if there is a way to preempt calling the API if a task is currently displayed and it has the same id.
+  // IDEA: Maybe throw the task id into the id of the task_entry_details table below, then we can pull the same null check
+  //       to avoid calling the API... :thinkingface:
+
+  const response = await getTask(id)
 
   // Do an early out path, to avoid having to depopulate the task-entry-details div.
   if (!response.ok)
@@ -50,15 +162,25 @@ async function onReviewEntryClicked(id)
     "</tr>" +
     "<tr>" +
     "<td>Description</td>" +
-    "<td>" + (task.description ?? "&lt;none&gt;") + "</td>" +
+    "<td>" +
+    "<textarea readonly>" +
+    (task.description ?? "&lt;none&gt;") +
+    "</textarea>" +
+    "</td>" +
     "</tr>" +
     "<tr>" +
     "<td>Status</td>" +
     "<td>" + task.status + "</td>" +
     "</tr>" +
-    "</table>" +
-    renderNoGoReason(task) +
-    "<input type='button' value='Vanish' onclick='clearTaskEntryDetails()'/>"
+    renderReviewNoGoReason(task) +
+    "<tr>" +
+    "<td>Actions</td>" +
+    "<td>" +
+    "<input type='button' value='Vanish' onclick='clearTaskEntryDetails()'/>" +
+    "<input type='button' value='Modify' id='modify-task-button' onclick='onModifyEntryClicked(" + task.id + ")'/>" +
+    "</td>" +
+    "</tr>" +
+    "</table>"
 
   // Seems weird to display the horizon attribute, since they should be filtered accordingly, but... *shrug*
   // ya never know what derps technology is gonna do!
