@@ -55,3 +55,62 @@ async function onHorizonSelected()
     table.appendChild(row)
   }
 }
+
+function clearTaskEntryDetails()
+{
+  // Wipe out the div contents;
+  document.getElementById("task-entry-details").innerHTML = ""
+}
+
+function onCancelNewEntryClicked()
+{
+  clearTaskEntryDetails()
+}
+
+async function createNewEntry(horizon, title)
+{
+  return await fetch("/api/tasks", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      horizon: horizon,
+      title: title
+    })
+  })
+}
+
+async function onCreateNewEntryClicked()
+{
+  // Collect the data from the fields.
+  const horizon = document.getElementById("horizon-near").checked ? "NEAR" : "LONG"
+  const title = document.getElementById("new-entry-title").value.trim()
+
+  // Guard against empty titles - can't create a task without one!
+  if (!title)
+  {
+    return
+  }
+
+  const response = await createNewEntry(horizon, title)
+
+  if (response.ok)
+  {
+    clearTaskEntryDetails()
+
+    // Refresh the task entry list to show the newly minted task.
+    await onHorizonSelected()
+  }
+}
+
+function onNewEntryClicked()
+{
+  // Since this function is going to populate the task-entry-details div, we should probably nab a reference.
+  const task_entry_details = document.getElementById("task-entry-details")
+
+  task_entry_details.innerHTML =
+    "<input type='button' value='Cancel' onclick='onCancelNewEntryClicked()'/>" +
+    "<input type='text' id='new-entry-title' placeholder='Task title' />" +
+    "<input type='button' value='Create' onclick='onCreateNewEntryClicked()'/>"
+}
