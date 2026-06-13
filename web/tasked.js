@@ -57,7 +57,7 @@ async function onUpdateEntryClicked(id)
     const title = document.getElementById("modify-task-title").value.trim()
     const description = document.getElementById("modify-task-description").value.trim()
     const status = document.getElementById("modify-task-status").value
-    const nogo_reason = status !== "NOGO" ? null : document.getElementById("modify-tasks-nogo-reason").value.trim()
+    const nogo_reason = status !== "NOGO" ? null : document.getElementById("modify-task-nogo-reason").value.trim()
 
     // TODO: Implement the DODO (dirty) check here - we have the modified task attributes, and the id from the call.
     // We can therefore call getTask(id) again, compare values against the task the API returns, and update by just
@@ -242,6 +242,33 @@ async function onReviewEntryClicked(id)
   // ya never know what derps technology is gonna do!
 }
 
+async function deleteTask(id)
+{
+  const response = await fetch("/api/tasks/" + id, {
+    method: "DELETE"
+  })
+
+  if (!response.ok)
+  {
+    // TODO: Implement a user notification mechanism.
+    // For now, console them instead.
+    console.log("Failed to DELETE task " + id)
+  }
+
+  return response.ok
+}
+
+async function onDeleteEntryClicked(id)
+{
+  // Successful deletion should return the user to the base entries list.
+  if (await deleteTask(id))
+  {
+    clearTaskEntryDetails()
+
+    await onHorizonSelected()
+  }
+}
+
 async function onHorizonSelected()
 {
   // Now that we are crossing the aisle to the backend, we can simply "know" which horizon is selected..
@@ -294,7 +321,7 @@ async function onHorizonSelected()
       "<td>" + task.title + "</td>" +
       "<td>|</td>" +
       "<td><input type='button' value='/' onclick='onReviewEntryClicked(" + task.id + ")'/></td>" +
-      "<td><input type='button' value='X'/></td>"
+      "<td><input type='button' value='X' onclick='onDeleteEntryClicked(" + task.id + ")'/></td>"
     table.appendChild(row)
   }
 }
