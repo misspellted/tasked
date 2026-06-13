@@ -200,23 +200,25 @@ Save enabled = (DODO == true) AND (status != NOGO OR nogo_reason != empty)
 - CRUDE REST API
 - Dockerized from day one
 
-### Phase 3 — Frontend Foundations *(you are here)*
-- Vanilla HTML/CSS/JS
+### Phase 3 — Frontend Foundations ✅
+- Vanilla HTML/JS
 - Static task list wired to API
-- Card panel, DODO flag, NOPE button
-- NOGO reason validation
-
-### Phase 4 — Feature Depth
 - NEAR / LONG horizons
-- Soft delete
+- Card panel (elementary version just another vertical portion)
+- NOGO reason validation
+- Soft delete (verified via sqlite3 command as API returns is_deleted==0 only)
+
+### Phase 4 — Feature Depth *(you are here)*
+- Implement DODO (dirty) flag for partial task updates
 - Reorder arrows
-- Month-end reset mechanic
+- Basic visual upgrade with CSS
+- Drag-and-drop
 
 ### Phase 5 — Post-MVP Features
 - Compost heap 🌱
 - Email annoyances 👀
 - Recurring tasks
-- Drag-and-drop
+- Month-end reports
 - SQLite → PostgreSQL migration
 
 ### Phase 6 — Portfolio Wrap-up

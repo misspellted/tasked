@@ -31,3 +31,15 @@
 ### Removed
 
 * Frontend no longer shows meme counts and task placeholders (a loss for humanity - recovery uncertain)
+
+# 0.0.1
+
+"The ugly duckling sends ripples over the pond"
+
+![CRUDEly done!](./img/Jay-Eee-Ell-Ell-Ohh-Yea.png)
+
+### Added
+
+* The CERN-era "ugly duckling" now wired into all backend CRUDE API routes.
+* Review and Update entry detail views for respective interactions.
+* [Bug] Updating a task to NOGO terminal state required a "double PUT" to update the status counters.
