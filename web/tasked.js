@@ -27,6 +27,62 @@ function renderUpdateNoGoReason(task, modified_task_status)
     "</tr>"
 }
 
+async function putTask(id, attributes)
+{
+  const response = await fetch("/api/tasks/" + id, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(attributes)
+  })
+
+  if (!response.ok)
+  {
+    // TODO: Indicate the problem to the user.
+    // For now, log to console.
+    console.log("Failed to PUT for task " + id)
+  }
+
+  return response.ok
+}
+
+async function onUpdateEntryClicked(id)
+{
+  // Only perform the update if the page is in modify "mode".
+  if (document.getElementById("modify-update-button") !== null)
+  {
+    // Capture all the attributes of the task in order to send an update.
+    const horizon = document.getElementById("modify-task-horizon").value
+    const title = document.getElementById("modify-task-title").value.trim()
+    const description = document.getElementById("modify-task-description").value.trim()
+    const status = document.getElementById("modify-task-status").value
+    const nogo_reason = status !== "NOGO" ? null : document.getElementById("modify-tasks-nogo-reason").value.trim()
+
+    // TODO: Implement the DODO (dirty) check here - we have the modified task attributes, and the id from the call.
+    // We can therefore call getTask(id) again, compare values against the task the API returns, and update by just
+    // the different fields; however, the API doesn't support small changes to tasks - it's all or nothing for now.
+    if (!putTask(id, {
+      horizon: horizon,
+      title: title,
+      description: description,
+      status: status,
+      nogo_reason: nogo_reason
+    }))
+    {
+      // Leave the user at the task update view.
+      return
+    }
+    else
+    {
+      // A successful update should return to the main view, just as if the page was first loaded.
+      clearTaskEntryDetails()
+
+      await onHorizonSelected()
+    }
+  }
+}
+
 function renderTaskEntryUpdateView(task)
 {
   // Get the modified task status value before rerendering on status selection change.
@@ -50,7 +106,7 @@ function renderTaskEntryUpdateView(task)
     "<tr>" +
     "<td>Title</td>" +
     "<td>" +
-    "<input type='text' id='modify-entry-title' value='" + task.title + "' />" +
+    "<input type='text' id='modify-task-title' value='" + task.title + "' />" +
     "</td>" +
     "</tr>" +
     "<tr>" +
@@ -77,7 +133,7 @@ function renderTaskEntryUpdateView(task)
     "<td>Actions</td>" +
     "<td>" +
     "<input type='button' value='Cancel' onclick='onReviewEntryClicked(" + task.id + ")'/>" +
-    "<input type='button' value='Update' onclick='onUpdateEntryClicked(" + task.id + ")'/>" +
+    "<input type='button' value='Update' id='modify-update-button' onclick='onUpdateEntryClicked(" + task.id + ")'/>" +
     "</td>" +
     "</tr>" +
     "</table>"
