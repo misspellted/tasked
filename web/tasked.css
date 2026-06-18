@@ -1,0 +1,65 @@
+
+/*
+ * TASKED will utilize a style similar to seeing both the spine of a book
+ * and the pages, like a 10% spine / 90% pages:
+ *
+ * +---+-----------------------------+
+ * |   | NEAR         +         LONG |
+ * | T +-----------------------------+
+ * | A |                             |
+ * | S |   TOGO  ONGO   DONE  NOGO   |
+ * | K |     0     0      0     1    |
+ * | E |                             |
+ * | D +-----------------------------+
+ * |   | - + TICK OFF Alex / X       |
+ * |   | - + ....          / X       |
+ * +---+-----------------------------+
+ *
+ */
+
+
+body
+{
+  max-width: 50%;
+  margin: 5% auto;
+}
+
+.binding
+/* The container of the viewport. */
+{
+  width: 100%;
+
+  /* A simple no-flairs style, fit for Alex's developer-centered experience. */
+  font-family: monospace;
+  font-size: 16px;
+}
+
+.spine
+/* A space for the title of the book. */
+{
+  float: left;
+  width: 10%;
+
+  /* Center the contents in the area. */
+  display: flex;
+  justify-content: center;
+
+  /* Grow a spine! (and emphasize the text!) */
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.spinal
+/* Transforms for displaying in the spine of the binding. */
+{
+  writing-mode: vertical-lr;
+  text-orientation: upright;
+}
+
+.pages
+/* The container for the page content. */
+{
+  /* Consume the remainder of the viewport. */
+  float: right;
+  width: 90%;
+}

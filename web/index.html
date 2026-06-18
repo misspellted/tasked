@@ -2,66 +2,74 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
+    <!-- For centering it appears necessary to define the viewport? -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Inform the client that the content is of a dark color theme, avoiding the "flashbang" of the page if it loads slower than expected. -->
     <meta name="color-scheme" content="dark">
+    <!-- Then the specific darkness can rule all of it. -->
+    <link rel="stylesheet" href="tasked.css" />
     <title>TASKED</title>
   </head>
   <body onload="onHorizonSelected()">
     <script src="tasked.js"></script>
-    <div id="title">
-      <h1>TASKED</h1>
-    </div>
-    <hr/>
-    <div id="horizon-selector">
-      <input type="radio" name="horizon" id="horizon-near" value="near" checked onclick="onHorizonSelected()"/>
-      <label for="horizon-near">NEAR</label>
-      <span>|</span>
-      <input type="radio" name="horizon" id="horizon-long" value="long" onclick="onHorizonSelected()"/>
-      <label for="horizon-long">LONG</label>
-    </div>
-    <hr/>
-    <div id="horizon-counts">
-      <table>
-        <tr>
-          <td id="horizon-status-none"><input type="button" id="new-entry" value="+" onclick="onNewEntryClicked()"/></td>
-          <td id="horizon-status-todo">TODO</td>
-          <td id="horizon-status-ongo">ONGO</td>
-          <td id="horizon-status-done">DONE</td>
-          <td id="horizon-status-nogo">NOGO</td>
-        </tr>
-        <tr>
-          <td id="horizon-count-none"></td>
-          <td id="horizon-count-todo"><center>1</center></td>
-          <td id="horizon-count-ongo"><center>3</center></td>
-          <td id="horizon-count-done"><center>3</center></td>
-          <td id="horizon-count-nogo"><center>7</center></td>
-        </tr>
-      </table>
-    </div>
-    <hr/>
-    <div id="task-entry-details">
-    </div>
-    <hr/>
-    <div id="horizon-entries">
-      <table>
-        <tr>
-          <td><input type="button" id="position-move-rise" value="/\"/></td>
-          <td><input type="button" id="position-move-fall" value="\/"/></td>
-          <td>|</td>
-          <td id="horizon-entry-title">DO ALL THE THINGS!</td>
-          <td>|</td>
-          <td><input type="button" id="modify-entry" value="/"/></td>
-          <td><input type="button" id="delete-entry" value="X"/></td>
-        </tr>
-        <tr>
-          <td><input type="button" id="position-move-rise" value="/\"/></td>
-          <td><input type="button" id="position-move-fall" value="\/"/></td>
-          <td>|</td>
-          <td id="horizon-entry-title">OF COURSE LOREM IPSUM!</td>
-          <td>|</td>
-          <td><input type="button" id="modify-entry" value="/"/></td>
-          <td><input type="button" id="delete-entry" value="X"/></td>
-        </tr>
-      </table>
+    <div class="binding">
+      <div class="spine">
+        <span class="spinal">TASKED</span>
+      </div>
+      <div class="pages">
+        <div id="horizon-selector">
+          <input type="radio" name="horizon" id="horizon-near" value="near" checked onclick="onHorizonSelected()"/>
+          <label for="horizon-near">NEAR</label>
+          <span>|</span>
+          <input type="radio" name="horizon" id="horizon-long" value="long" onclick="onHorizonSelected()"/>
+          <label for="horizon-long">LONG</label>
+        </div>
+        <hr/>
+        <div id="horizon-counts">
+          <table>
+            <tr>
+              <td id="horizon-status-none"><input type="button" id="new-entry" value="+" onclick="onNewEntryClicked()"/></td>
+              <td id="horizon-status-todo">TODO</td>
+              <td id="horizon-status-ongo">ONGO</td>
+              <td id="horizon-status-done">DONE</td>
+              <td id="horizon-status-nogo">NOGO</td>
+            </tr>
+            <tr>
+              <td id="horizon-count-none"></td>
+              <td id="horizon-count-todo"><center>1</center></td>
+              <td id="horizon-count-ongo"><center>3</center></td>
+              <td id="horizon-count-done"><center>3</center></td>
+              <td id="horizon-count-nogo"><center>7</center></td>
+            </tr>
+          </table>
+        </div>
+        <hr/>
+        <div id="task-entry-details">
+        </div>
+        <hr/>
+        <div id="horizon-entries">
+          <table>
+            <tr>
+              <td><input type="button" id="position-move-rise" value="/\"/></td>
+              <td><input type="button" id="position-move-fall" value="\/"/></td>
+              <td>|</td>
+              <td id="horizon-entry-title">DO ALL THE THINGS!</td>
+              <td>|</td>
+              <td><input type="button" id="modify-entry" value="/"/></td>
+              <td><input type="button" id="delete-entry" value="X"/></td>
+            </tr>
+            <tr>
+              <td><input type="button" id="position-move-rise" value="/\"/></td>
+              <td><input type="button" id="position-move-fall" value="\/"/></td>
+              <td>|</td>
+              <td id="horizon-entry-title">OF COURSE LOREM IPSUM!</td>
+              <td>|</td>
+              <td><input type="button" id="modify-entry" value="/"/></td>
+              <td><input type="button" id="delete-entry" value="X"/></td>
+            </tr>
+          </table>
+        </div>
+      </div>
     </div>
   </body>
 </html>
