@@ -318,7 +318,7 @@ async function onHorizonSelected()
       "<td><input type='button' value='/\\'/></td>" +
       "<td><input type='button' value='\\/'/></td>" +
       "<td>|</td>" +
-      "<td>" + task.title + "</td>" +
+      "<td class='task-title'>" + task.title + "</td>" +
       "<td>|</td>" +
       "<td><input type='button' value='/' onclick='onReviewEntryClicked(" + task.id + ")'/></td>" +
       "<td><input type='button' value='X' onclick='onDeleteEntryClicked(" + task.id + ")'/></td>"
@@ -363,7 +363,7 @@ async function onCreateNewEntryClicked()
   }
 }
 
-function onNewEntryClicked()
+function onNewTaskClicked()
 {
   // Since this function is going to populate the task-entry-details div, we should probably nab a reference.
   const task_entry_details = document.getElementById("task-entry-details")

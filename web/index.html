@@ -12,30 +12,28 @@
   </head>
   <body onload="onHorizonSelected()">
     <script src="tasked.js"></script>
-    <div class="binding">
+    <div class="book">
       <div class="spine">
         <span class="spinal">TASKED</span>
       </div>
-      <div class="pages">
-        <div id="horizon-selector">
+      <div class="page">
+        <div class="page-header" id="horizon-selector">
           <input type="radio" name="horizon" id="horizon-near" value="near" checked onclick="onHorizonSelected()"/>
           <label for="horizon-near">NEAR</label>
-          <span>|</span>
+          <input type="button" id="new-task" value="+" onclick="onNewTaskClicked()"/>
           <input type="radio" name="horizon" id="horizon-long" value="long" onclick="onHorizonSelected()"/>
           <label for="horizon-long">LONG</label>
         </div>
         <hr/>
-        <div id="horizon-counts">
-          <table>
+        <div class="page-detail">
+          <table id="horizon-counts">
             <tr>
-              <td id="horizon-status-none"><input type="button" id="new-entry" value="+" onclick="onNewEntryClicked()"/></td>
-              <td id="horizon-status-todo">TODO</td>
-              <td id="horizon-status-ongo">ONGO</td>
-              <td id="horizon-status-done">DONE</td>
-              <td id="horizon-status-nogo">NOGO</td>
+              <td class="horizon-status" id="horizon-status-todo">TODO</td>
+              <td class="horizon-status" id="horizon-status-ongo">ONGO</td>
+              <td class="horizon-status" id="horizon-status-done">DONE</td>
+              <td class="horizon-status" id="horizon-status-nogo">NOGO</td>
             </tr>
             <tr>
-              <td id="horizon-count-none"></td>
               <td id="horizon-count-todo"><center>1</center></td>
               <td id="horizon-count-ongo"><center>3</center></td>
               <td id="horizon-count-done"><center>3</center></td>
@@ -47,7 +45,7 @@
         <div id="task-entry-details">
         </div>
         <hr/>
-        <div id="horizon-entries">
+        <div class="page-footer" id="horizon-entries">
           <table>
             <tr>
               <td><input type="button" id="position-move-rise" value="/\"/></td>
