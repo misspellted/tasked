@@ -177,6 +177,24 @@ body
 }
 
 /*
+ * It's happening! The troll status cursor pointers are now doing a thing!
+ */
+.page-detail td.horizon-status.active
+{
+  font-style: italic;
+  font-weight: bold;
+}
+
+/*
+ * Not sure if this is needed, but to keep parity with the NEAR | LONG horizon stylizing...
+ */
+.page-detail td.horizon-status
+{
+  font-style: normal;
+  font-weight: normal;
+}
+
+/*
  * At the bottom of the page, the footer secion contains
  * the list of tasks for the selected horizon.
  *

@@ -10,62 +10,20 @@
     <link rel="stylesheet" href="tasked.css" />
     <title>TASKED</title>
   </head>
-  <body onload="onHorizonSelected()">
+  <body onload="openCountsView('NEAR')">
     <script src="tasked.js"></script>
     <div class="book">
       <div class="spine">
         <span class="spinal">TASKED</span>
       </div>
       <div class="page">
-        <div class="page-header" id="horizon-selector">
-          <input type="radio" name="horizon" id="horizon-near" value="near" checked onclick="onHorizonSelected()"/>
-          <label for="horizon-near">NEAR</label>
-          <input type="button" id="new-task" value="+" onclick="onNewTaskClicked()"/>
-          <input type="radio" name="horizon" id="horizon-long" value="long" onclick="onHorizonSelected()"/>
-          <label for="horizon-long">LONG</label>
+        <div class="page-header" id="page-header">
         </div>
         <hr/>
-        <div class="page-detail">
-          <table id="horizon-counts">
-            <tr>
-              <td class="horizon-status" id="horizon-status-todo">TODO</td>
-              <td class="horizon-status" id="horizon-status-ongo">ONGO</td>
-              <td class="horizon-status" id="horizon-status-done">DONE</td>
-              <td class="horizon-status" id="horizon-status-nogo">NOGO</td>
-            </tr>
-            <tr>
-              <td id="horizon-count-todo"><center>1</center></td>
-              <td id="horizon-count-ongo"><center>3</center></td>
-              <td id="horizon-count-done"><center>3</center></td>
-              <td id="horizon-count-nogo"><center>7</center></td>
-            </tr>
-          </table>
+        <div class="page-detail" id="page-detail">
         </div>
         <hr/>
-        <div id="task-entry-details">
-        </div>
-        <hr/>
-        <div class="page-footer" id="horizon-entries">
-          <table>
-            <tr>
-              <td><input type="button" id="position-move-rise" value="/\"/></td>
-              <td><input type="button" id="position-move-fall" value="\/"/></td>
-              <td>|</td>
-              <td id="horizon-entry-title">DO ALL THE THINGS!</td>
-              <td>|</td>
-              <td><input type="button" id="modify-entry" value="/"/></td>
-              <td><input type="button" id="delete-entry" value="X"/></td>
-            </tr>
-            <tr>
-              <td><input type="button" id="position-move-rise" value="/\"/></td>
-              <td><input type="button" id="position-move-fall" value="\/"/></td>
-              <td>|</td>
-              <td id="horizon-entry-title">OF COURSE LOREM IPSUM!</td>
-              <td>|</td>
-              <td><input type="button" id="modify-entry" value="/"/></td>
-              <td><input type="button" id="delete-entry" value="X"/></td>
-            </tr>
-          </table>
+        <div class="page-footer" id="page-footer">
         </div>
       </div>
     </div>
