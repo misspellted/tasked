@@ -1,0 +1,213 @@
+
+/*
+ * TASKED will utilize a style similar to seeing both the spine of a book
+ * and the pages, like a 10% spine / 90% pages:
+ *
+ * +---+-----------------------------+
+ * |   | NEAR         +         LONG |
+ * | T +-----------------------------+
+ * | A |                             |
+ * | S |   TOGO  ONGO   DONE  NOGO   |
+ * | K |     0     0      0     1    |
+ * | E |                             |
+ * | D +-----------------------------+
+ * |   |  - + TICK OFF Alex / X      |
+ * |   |                             |
+ * +---+-----------------------------+
+ *
+ */
+
+
+body
+{
+  max-width: 50%;
+  margin: 5% auto;
+}
+
+/*
+ * The base layout "spine + page", like a book:
+ *
+ * +---+-----------------------------+
+ * |   |                             |
+ * | T |                             |
+ * | A |                             |
+ * | S |                             |
+ * | K |                             |
+ * | E |                             |
+ * | D |                             |
+ * |   |                             |
+ * |   |                             |
+ * +---+-----------------------------+
+ *
+ * Basically, it splices off some space to the left of the main content,
+ * so that the tilte of the page can be presented in a vertical text form.
+ */
+
+.book
+{
+  width: 100%;
+
+  /* A simple no-flairs style, fit for Alex's developer-centered experience. */
+  font-family: monospace;
+  font-size: 16px;
+}
+
+.spine
+{
+  float: left;
+  width: 10%;
+
+  /* Center the contents in the area. */
+  display: flex;
+  justify-content: center;
+
+  /* Grow a spine! (and emphasize the text!) */
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.spinal
+{
+  writing-mode: vertical-lr;
+  text-orientation: upright;
+}
+
+.page
+{
+  /* Consume the remainder of the viewport. */
+  float: right;
+  width: 90%;
+}
+
+/*
+ * Each page has the header, which functions as the page "flipper"
+ * between the NEAR and LONG pages.
+ *
+ * +---+-----------------------------+
+ * |   | NEAR         +         LONG |
+ * |   +-----------------------------+
+ * |   |                             |
+ * |   |                             |
+ * |   |                             |
+ * |   |                             |
+ * |   |                             |
+ * |   |                             |
+ * |   |                             |
+ * +---+-----------------------------+
+ *
+ * It also captures the relocated new-task ("+") button to the center,
+ * between both page "flippers".
+ */
+
+.page-header
+{
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Hide the radio 'button' visual. */
+.page-header input[type="radio"]
+{
+  display: none
+}
+
+/* But we do want some indication of which is active. */
+/* This lovely filter selects the label of the checked hidden radio button. (from Claude's previously generated CSS; IDKWTF this was prior, haha!) */
+.page-header input[type="radio"]:checked + label
+{
+  font-style: italic;
+  font-weight: bold;
+}
+
+/* And indicate when the other is inactive (default). */
+.page-header label
+{
+  font-style: normal;
+  font-weight: normal;
+}
+
+/* Make the cursor switch to the pointer over the labels,
+ * indicating they are selectable.
+ */
+.page-header label:hover
+{
+  cursor: pointer;
+}
+
+/*
+ * Under the task horizon selector page header, the page
+ * detail section is where the task status counts of the
+ * selected horizon are visible (by default).
+ *
+ * TODO: The status counts are swapped for any of the task
+ * detail views (counts, create, review, update).
+ * >> loadPageDetail("counts")
+ * >> loadPageDetail("create")
+ * >> loadPageDetail("review")
+ * >> loadPageDetail("update")
+ *
+ * +---+-----------------------------+
+ * |   |                             |
+ * |   +-----------------------------+
+ * |   |                             |
+ * |   |   TOGO  ONGO   DONE  NOGO   |
+ * |   |     0     0      0     1    |
+ * |   |                             |
+ * |   +-----------------------------+
+ * |   |                             |
+ * |   |                             |
+ * +---+-----------------------------+
+ *
+ */
+
+.page-detail
+{
+  display: flex;
+  justify-content: center;
+}
+
+/* Troll the users until a task status click status actually
+ * filters the task listing.
+ *
+ * Selectors are pretty cool! (Third one, second on my own after td.task-title one below)
+ */
+.page-detail td.horizon-status:hover
+{
+  cursor: pointer;
+}
+
+/*
+ * At the bottom of the page, the footer secion contains
+ * the list of tasks for the selected horizon.
+ *
+ * +---+-----------------------------+
+ * |   |                             |
+ * |   +-----------------------------+
+ * |   |                             |
+ * |   |                             |
+ * |   |                             |
+ * |   |                             |
+ * |   +-----------------------------+
+ * |   |  - + TICK OFF Alex / X      |
+ * |   |                             |
+ * +---+-----------------------------+
+ *
+ * It isn't centered directly, but we do want a bit of spacing
+ * on the left, before the - (actually /\) and + (actually \/)
+ * task positioning buttons (the + and - shorthands were used
+ * to keep the entries cleaner/I am lazy. ^_^
+ */
+
+.page-footer
+{
+  padding-left: 2%;
+}
+
+/* Troll the users until the click for a title switches to
+ * the review/update detial.
+ */
+/* I did this selector myself! (needed two attempts: stupidly started with tr, not td; bug spotted with Firefox's inspector already active...) */
+.page-footer td.task-title:hover
+{
+  cursor: pointer;
+}

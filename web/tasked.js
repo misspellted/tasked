@@ -234,6 +234,7 @@ async function onReviewEntryClicked(id)
     "<td>" +
     "<input type='button' value='Vanish' onclick='clearTaskEntryDetails()'/>" +
     "<input type='button' value='Modify' id='modify-task-button' onclick='onModifyEntryClicked(" + task.id + ")'/>" +
+    "<input type='button' value='Delete' onclick='onDeleteEntryClicked(" + task.id + ")'/>" +
     "</td>" +
     "</tr>" +
     "</table>"
@@ -318,10 +319,7 @@ async function onHorizonSelected()
       "<td><input type='button' value='/\\'/></td>" +
       "<td><input type='button' value='\\/'/></td>" +
       "<td>|</td>" +
-      "<td>" + task.title + "</td>" +
-      "<td>|</td>" +
-      "<td><input type='button' value='/' onclick='onReviewEntryClicked(" + task.id + ")'/></td>" +
-      "<td><input type='button' value='X' onclick='onDeleteEntryClicked(" + task.id + ")'/></td>"
+      "<td class='task-title' onclick='onReviewEntryClicked(" + task.id + ")'>" + task.title + "</td>"
     table.appendChild(row)
   }
 }
@@ -363,7 +361,7 @@ async function onCreateNewEntryClicked()
   }
 }
 
-function onNewEntryClicked()
+function onNewTaskClicked()
 {
   // Since this function is going to populate the task-entry-details div, we should probably nab a reference.
   const task_entry_details = document.getElementById("task-entry-details")
@@ -373,3 +371,11 @@ function onNewEntryClicked()
     "<input type='text' id='new-entry-title' placeholder='Task title' />" +
     "<input type='button' value='Create' onclick='onCreateNewEntryClicked()'/>"
 }
+
+/* TODO: The status counts are swapped for any of the task
+ * detail views (counts, create, review, update).
+ * >> loadPageDetail("counts")
+ * >> loadPageDetail("create")
+ * >> loadPageDetail("review")
+ * >> loadPageDetail("update")
+ */
