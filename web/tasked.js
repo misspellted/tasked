@@ -394,7 +394,7 @@ async function getTasks(horizon)
   return horizon_tasks
 }
 
-async function openCountsView(horizon)
+async function openCountsView(horizon, status = null)
 {
   /*
    * The main view of the web document.
@@ -455,10 +455,10 @@ async function openCountsView(horizon)
   page_detail.innerHTML =
     "<table id='horizon-counts'>" +
     "<tr>" +
-    "<td class='horizon-status' id='horizon-status-todo'>TODO</td>" +
-    "<td class='horizon-status' id='horizon-status-ongo'>ONGO</td>" +
-    "<td class='horizon-status' id='horizon-status-done'>DONE</td>" +
-    "<td class='horizon-status' id='horizon-status-nogo'>NOGO</td>" +
+    "<td class='horizon-status" + (status === "TODO" ? " active" : "") + "' onclick='openCountsView(\"" + horizon + "\", " + (status === "TODO" ? "null" : "\"TODO\"") + ")'>TODO</td>" +
+    "<td class='horizon-status" + (status === "ONGO" ? " active" : "") + "' onclick='openCountsView(\"" + horizon + "\", " + (status === "ONGO" ? "null" : "\"ONGO\"") + ")'>ONGO</td>" +
+    "<td class='horizon-status" + (status === "DONE" ? " active" : "") + "' onclick='openCountsView(\"" + horizon + "\", " + (status === "DONE" ? "null" : "\"DONE\"") + ")'>DONE</td>" +
+    "<td class='horizon-status" + (status === "NOGO" ? " active" : "") + "' onclick='openCountsView(\"" + horizon + "\", " + (status === "NOGO" ? "null" : "\"NOGO\"") + ")'>NOGO</td>" +
     "</tr>" +
     "<tr>" +
     "<td class='horizon-count' id='horizon-count-todo'><center>" + horizon_task_counts.TODO + "</center></td>" +
@@ -491,7 +491,21 @@ async function openCountsView(horizon)
     // However, Claude pointed out map(...), and I was like "YES! I .. THERE HAD TO BE SOMETHING LIKE THAT - I JUST DIDN'T KNOW!"
     // So... here's that version:
 
-    const rows = horizon_tasks.map(horizon_task =>
+    // const rows = horizon_tasks.map(horizon_task =>
+    //   "<tr>" +
+    //   "<td><input type='button' value='/\\'/></td>" + // TODO: onIncrementPriority(horizon_task.id)
+    //   "<td><input type='button' value='\\/'/></td>" + // TODO: onDecrementPriority(horizon_task.id)
+    //   "<td>|</td>" +
+    //   "<td class='task-title' onclick='openReviewView(" + horizon_task.id + ")'>" + horizon_task.title + "</td>" +
+    //   "</tr>"
+    // )
+
+    // STATUS FILTRATION
+    // To make it easier to dogfeed (actually deploy this for internal field testing on a Raspberry Pi), the status
+    // count headers function as a toggle filter (only one active at a time).
+    const filtered_tasks = status !== null ? horizon_tasks.filter(t => t.status === status) : horizon_tasks
+
+    const rows = filtered_tasks.map(horizon_task =>
       "<tr>" +
       "<td><input type='button' value='/\\'/></td>" + // TODO: onIncrementPriority(horizon_task.id)
       "<td><input type='button' value='\\/'/></td>" + // TODO: onDecrementPriority(horizon_task.id)
