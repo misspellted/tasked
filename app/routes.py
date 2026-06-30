@@ -1,7 +1,8 @@
 from datetime import datetime, timezone
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 from app.database import get_connection
 from app.models import TaskResponse, TaskCreate, TaskUpdate
+from typing import Optional
 
 router = APIRouter()
 
@@ -56,16 +57,28 @@ def reorder_tasks(reorder: TaskReorder):
 # data layer is functioning properly. But first, we need to start on E:
 
 @router.get("/api/tasks", response_model=list[TaskResponse])
-def enumerate_tasks():
+def enumerate_tasks(horizon: Optional[str] = Query(None, pattern="^(NEAR|LONG)$")):
     """
     Returns all non-deleted tasks, ordered by horizon then position.
+
+    Tasks returned are scoped to the horizon specified; if one is not specified, both NEAR and LONG horizon tasks are returned.
+    > This may not be maintained in the future as an optional; instead it may become required. The future knows, but not now.
     """
     conn = get_connection()
-    tasks = conn.execute("""
-        SELECT * FROM tasks
-        WHERE is_deleted = 0
-        ORDER BY horizon, position
-    """).fetchall()
+
+    # If we've got horizon lock, we can focus on just those tasks.
+    if horizon is not None:
+      tasks = conn.execute("""
+          SELECT * FROM tasks
+          WHERE is_deleted = 0 AND horizon = ?
+          ORDER BY position
+      """, (horizon,)).fetchall()
+    else:
+      tasks = conn.execute("""
+          SELECT * FROM tasks
+          WHERE is_deleted = 0
+          ORDER BY horizon, position
+      """).fetchall()
     conn.close()
     return [dict(task) for task in tasks]
 

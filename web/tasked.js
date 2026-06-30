@@ -379,3 +379,126 @@ function onNewTaskClicked()
  * >> loadPageDetail("review")
  * >> loadPageDetail("update")
  */
+
+async function enumerateHorizonTasks(horizon)
+{
+  // TODO: Probably should avoid query parameter injection, but for now... we're just gonna...
+  // Claude mentioned encodeURIComponent(horizon), but I'm not familiar with it just yet. So... Soon (tm).
+  const horizon_tasks_response = await fetch("/api/tasks?horizon=" + horizon)
+
+  let horizon_tasks = []
+
+  if (!horizon_tasks_response.ok)
+  {
+    console.log("Failed to retrieve the tasks for " + horizon)
+  }
+  else
+  {
+    horizon_tasks.push(...await horizon_tasks_response.json())
+    // ... is the spread operation, similar to flatten([[a, b, c]]) in Terraform.
+  }
+
+  return horizon_tasks
+}
+
+async function openCountsView(horizon)
+{
+  /*
+   * The main view of the web document.
+   *
+   * +---+-----------------------------+
+   * |   | NEAR         +         LONG |
+   * |   +-----------------------------+
+   * |   |                             |
+   * |   |   TOGO  ONGO   DONE  NOGO   |
+   * |   |     0     0      0     1    |
+   * |   |                             |
+   * |   +-----------------------------+
+   * |   |  - + | TICK OFF Alex        |
+   * |   |                             |
+   * +---+-----------------------------+
+   *
+   */
+
+  // Grab a reference to the page containers.
+  const page_header = document.getElementById("page-header")
+  const page_detail = document.getElementById("page-detail")
+  const page_footer = document.getElementById("page-footer")
+
+  // Ensure James' favorite activity keeps the view ready for the contents..
+  // DELETE EVERYTING!
+  page_header.innerHTML = ""
+  page_detail.innerHTML = ""
+  page_footer.innerHTML = ""
+
+  // The page header contains the horizons (NEAR, LONG) as clickable labels, plus a centered "+" button (to create a new task).
+  page_header.innerHTML =
+    "<input type='radio' name='horizon' id='horizon-near' value='near' checked onclick='openCountsView(\"NEAR\")'/>" +
+    "<label for='horizon-near'>NEAR</label>" +
+    "<input type='button' id='new-task' value='+' onclick='onNewTaskClicked()'/>" +
+    "<input type='radio' name='horizon' id='horizon-long' value='long' onclick='openCountsView(\"LONG\")'/>" +
+    "<label for='horizon-long'>LONG</label>"
+
+  // The remaining page containers are dynamic, so we need to grab the driving data.
+  const horizon_tasks = await enumerateHorizonTasks(horizon)
+
+  // The page detail contains the status counts. (TODO: Add HEAP status count for showing soft-deleted tasks: is_deleted = 1)
+  const horizon_task_counts = { TODO: 0, ONGO: 0, DONE: 0, NOGO: 0 }
+  for (const horizon_task of horizon_tasks)
+  {
+    if (horizon_task_counts[horizon_task.status] !== undefined)
+    {
+      horizon_task_counts[horizon_task.status]++
+    }
+  }
+
+  page_detail.innerHTML =
+    "<table id='horizon-counts'>" +
+    "<tr>" +
+    "<td class='horizon-status' id='horizon-status-todo'>TODO</td>" +
+    "<td class='horizon-status' id='horizon-status-ongo'>ONGO</td>" +
+    "<td class='horizon-status' id='horizon-status-done'>DONE</td>" +
+    "<td class='horizon-status' id='horizon-status-nogo'>NOGO</td>" +
+    "</tr>" +
+    "<tr>" +
+    "<td class='horizon-count' id='horizon-count-todo'><center>" + horizon_task_counts.TODO + "</center></td>" +
+    "<td class='horizon-count' id='horizon-count-ongo'><center>" + horizon_task_counts.ONGO + "</center></td>" +
+    "<td class='horizon-count' id='horizon-count-done'><center>" + horizon_task_counts.DONE + "</center></td>" +
+    "<td class='horizon-count' id='horizon-count-nogo'><center>" + horizon_task_counts.NOGO + "</center></td>" +
+    "</tr>" +
+    "</table>" // TODO: Utilize the horizon-count class to center the counts instead of using center elements.
+
+  // The page footer contains the listing of the $horizon tasks with the selected $status filter(s).
+  if (horizon_tasks.length !== 0) // But a table without content is pointless, so.. maybe we should have something..
+  {
+    // NAIVE IMPLEMENTATION (IT PROBABALY COULD HAVE MAYBE WORKED...)
+    // --------------
+    // page_footer.innerHTML = "<table id='horizon-entries'>"
+    //
+    // for (const horizon_task of horizon_tasks)
+    // {
+    //   page_footer.innerHTML +=
+    //     "<tr>" +
+    //     "<td><input type='button' value='/\\'/></td>" + // TODO: onIncrementPriority(horizon_task.id)
+    //     "<td><input type='button' value='\\/'/></td>" + // TODO: onDecrementPriority(horizon_task.id)
+    //     "<td>|</td>" +
+    //     "<td class='task-title' onclick='onReviewEntryClicked(" + horizon_task.id + ")'>" + horizon_task.title + "</td>" +
+    //     "</tr>"
+    // }
+    //
+    // page_footer.innerHTML += "</table>"
+
+    // However, Claude pointed out map(...), and I was like "YES! I .. THERE HAD TO BE SOMETHING LIKE THAT - I JUST DIDN'T KNOW!"
+    // So... here's that version:
+
+    const rows = horizon_tasks.map(horizon_task =>
+      "<tr>" +
+      "<td><input type='button' value='/\\'/></td>" + // TODO: onIncrementPriority(horizon_task.id)
+      "<td><input type='button' value='\\/'/></td>" + // TODO: onDecrementPriority(horizon_task.id)
+      "<td>|</td>" +
+      "<td class='task-title' onclick='onReviewEntryClicked(" + horizon_task.id + ")'>" + horizon_task.title + "</td>" +
+      "</tr>"
+    )
+    page_footer.innerHTML = "<table id='horizon-entries'>" + rows.join("") + "</table>"
+  }
+}
